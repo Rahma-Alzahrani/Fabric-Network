@@ -1,0 +1,67 @@
+
+# for creating the network and bootsrapping the required identities 
+# we have two options to create the identities , first one using certificate authorities. 
+#second one is using cryptogen tool.
+# here we are using cryptogen tool
+# to use this file go to create-artificats.sh 
+
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # Orderer
+  # ---------------------------------------------------------------------------
+  - Name: Orderer
+    Domain: example.com
+    EnableNodeOUs: true
+
+    # ---------------------------------------------------------------------------
+    # "Specs" - See PeerOrgs below for complete description
+    # ---------------------------------------------------------------------------
+    Specs:
+      - Hostname: orderer
+        SANS:
+            - "localhost"
+            - "127.0.0.1"
+      - Hostname: orderer2
+        SANS:
+          - "localhost"
+          - "127.0.0.1"
+      - Hostname: orderer3
+        SANS:
+            - "localhost"
+            - "127.0.0.1"
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  # ---------------------------------------------------------------------------
+  # Org1
+  # ---------------------------------------------------------------------------
+  - Name: Org1
+    Domain: org1.example.com
+    EnableNodeOUs: true
+
+    Template:
+      Count: 2   # this means it will create two peers' certificates 
+      # Start: 5
+      # Hostname: {{.Prefix}}{{.Index}} # default
+      SANS:    #subject alternative name, that allows users to specify additional host names
+        - "localhost"
+
+    Users:
+      Count: 1    # in each Org there is admin and regular user and this is count of regular user
+
+  - Name: Org2
+    Domain: org2.example.com
+    EnableNodeOUs: true
+
+    Template:
+      Count: 2
+      # Start: 5
+      # Hostname: {{.Prefix}}{{.Index}} # default
+      SANS:
+        - "localhost"
+
+    Users:
+      Count: 1
+      
